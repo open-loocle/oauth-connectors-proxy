@@ -1,0 +1,31 @@
+{
+  "name": "backend",
+  "version": "0.0.1",
+  "scripts": {
+    "build": "npx tsc",
+    "watch": "tsc -w",
+    "start": "nodemon devServer.js",
+    "lint": "tslint -p tsconfig.json",
+    "test": "npx jest",
+    "deploy": "npm run build && npm run lint && npm run test && serverless deploy --stage production --region eu-central-1"
+  },
+  "devDependencies": {
+    "@types/aws-lambda": "^8.10.40",
+    "@types/aws-sdk": "0.0.42",
+    "@types/jest": "^26.0.14",
+    "cors": "^2.8.5",
+    "express": "^4.17.1",
+    "jest": "^26.6.3",
+    "lambda-local": "^1.7.4",
+    "nodemon": "^2.0.6",
+    "serverless": "^1.63.0",
+    "serverless-dotenv-plugin": "^2.3.2",
+    "ts-jest": "^26.3.0",
+    "tslint": "^5.20.1",
+    "tslint-config-standard": "^6.0.1",
+    "typescript": "^3.9.7"
+  },
+  "dependencies": {
+    "connectors": "file:../oauth-connectors"
+  }
+}

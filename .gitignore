@@ -1,0 +1,7 @@
+.idea/
+node_modules/
+.serverless/
+*.js
+!jest.config.js
+.env
+coverage/

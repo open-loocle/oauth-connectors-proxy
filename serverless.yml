@@ -1,0 +1,91 @@
+service: loocle
+
+frameworkVersion: ">=1.1.0 <2.0.0"
+
+provider:
+  name: aws
+  runtime: nodejs12.x
+  region: eu-west-2
+  stage: local
+
+plugins:
+  - serverless-dotenv-plugin
+
+custom:
+  defaultStage: local
+
+functions:
+  # NOTE: Function names should be up to 64 symbols.
+  #  Function names are prefixed with "loocle-production-"
+  connectorsConfluenceServerTemporaryCredential:
+    handler: connectors/ConfluenceServer.temporaryCredentialRequest
+    events:
+      - http:
+          path: connectors/ConfluenceServer/temporaryCredentialRequest
+          method: post
+          cors: true
+  connectorsConfluenceServerTokenCredentials:
+    handler: connectors/ConfluenceServer.tokenCredentialsRequest
+    events:
+      - http:
+          path: connectors/ConfluenceServer/tokenCredentialsRequest
+          method: post
+          cors: true
+  connectorsConfluenceServerSearch:
+    handler: connectors/ConfluenceServer.search
+    events:
+      - http:
+          path: connectors/ConfluenceServer/search
+          method: post
+          cors: true
+  connectorsConfluenceServerVisited:
+    handler: connectors/ConfluenceServer.visited
+    events:
+      - http:
+          path: connectors/ConfluenceServer/visited
+          method: post
+          cors: true
+  connectorsConfluenceServerCurrentUser:
+    handler: connectors/ConfluenceServer.currentUser
+    events:
+      - http:
+          path: connectors/ConfluenceServer/currentUser
+          method: post
+          cors: true
+  connectorsConfluenceServerFavorites:
+    handler: connectors/ConfluenceServer.favorites
+    events:
+      - http:
+          path: connectors/ConfluenceServer/favorites
+          method: post
+          cors: true
+  connectorsSlackAccessTokenRequest:
+    handler: connectors/Slack.accessTokenRequest
+    events:
+      - http:
+          path: connectors/Slack/accessTokenRequest
+          method: post
+          cors: true
+  connectorsSlackSearch:
+    handler: connectors/Slack.search
+    events:
+      - http:
+          path: connectors/Slack/search
+          method: post
+          cors: true
+  connectorsSlackCurrentUser:
+    handler: connectors/Slack.currentUser
+    events:
+      - http:
+          path: connectors/Slack/currentUser
+          method: post
+          cors: true
+  connectorsSlackFavorites:
+    handler: connectors/Slack.favorites
+    events:
+      - http:
+          path: connectors/Slack/favorites
+          method: post
+          cors: true
+
+resources:

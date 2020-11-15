@@ -1,0 +1,76 @@
+import { APIGatewayEvent, APIGatewayProxyResult, Context } from 'aws-lambda';
+import * as assert from 'assert';
+import {
+  Connector, ICurrentUser, IFavorites,
+  implementsIOAuth2AccessTokenRequest,
+  implementsIOAuth2AccessTokenResponse,
+  IOAuth2,
+  IOAuth2AccessTokenRequest,
+  IOAuth2AccessTokenResponse,
+  ISearch, Slack,
+} from 'connectors';
+import getConnector from './getConnector';
+import loadEnvVariable from '../loadEnvVariable';
+import handlePost, { Json } from './handlePost';
+
+// const clientId = loadEnvVariable('OAUTH_SLACK_CLIENT_ID');
+const clientSecret = loadEnvVariable('OAUTH_SLACK_CLIENT_SECRET');
+
+export async function accessTokenRequest(event: APIGatewayEvent, context: Context): Promise<APIGatewayProxyResult> {
+  console.info('Slack accessTokenRequest');
+  return await handlePost(event, context, (body: Json, context: Context) => {
+    return getConnector(Slack, body, context, clientSecret);
+  }, (body: Json) => {
+    const oAuth2AccessTokenRequest: IOAuth2AccessTokenRequest = body['oAuth2AccessTokenRequest'];
+    assert(implementsIOAuth2AccessTokenRequest(oAuth2AccessTokenRequest), 'Invalid oAuth2AccessTokenRequest ' + oAuth2AccessTokenRequest);
+    return oAuth2AccessTokenRequest;
+  }, async (connector: Connector, args: IOAuth2AccessTokenRequest) => {
+    return await (connector as unknown as IOAuth2).accessTokenRequest(args);
+  });
+}
+
+export async function search(event: APIGatewayEvent, context: Context): Promise<APIGatewayProxyResult> {
+  console.info('Slack search');
+  return handlePost(event, context, (body: Json, context: Context) => {
+    return getConnector(Slack, body, context);
+  }, (body: Json) => {
+    let query: string;
+    let oAuth2AccessTokenResponse: IOAuth2AccessTokenResponse;
+    [query, oAuth2AccessTokenResponse] = body['args'];
+    assert(implementsIOAuth2AccessTokenResponse(oAuth2AccessTokenResponse), 'Invalid oAuth2AccessTokenResponse ' + oAuth2AccessTokenResponse);
+    return [query, oAuth2AccessTokenResponse] as [string, IOAuth2AccessTokenResponse];
+  }, async (connector: Connector, args: [string, IOAuth2AccessTokenResponse]) => {
+    return await (connector as unknown as ISearch).search(...args);
+  });
+}
+
+export async function currentUser(event: APIGatewayEvent, context: Context): Promise<APIGatewayProxyResult> {
+  console.info('Slack currentUser');
+  return handlePost(event, context, (body: Json, context: Context) => {
+    return getConnector(Slack, body, context);
+  }, (body: Json) => {
+    const oAuth2AccessTokenResponse: IOAuth2AccessTokenResponse = body['args'][0];
+    assert(implementsIOAuth2AccessTokenResponse(oAuth2AccessTokenResponse), 'Invalid oAuth2AccessTokenResponse ' + oAuth2AccessTokenResponse);
+    return oAuth2AccessTokenResponse;
+  }, async (connector: Connector, args: IOAuth2AccessTokenResponse) => {
+    return await (connector as unknown as ICurrentUser).currentUser(args);
+  });
+}
+
+export async function favorites(event: APIGatewayEvent, context: Context): Promise<APIGatewayProxyResult> {
+  console.info('Slack favorites');
+  return handlePost(event, context, (body: Json, context: Context) => {
+    return getConnector(Slack, body, context);
+  }, (body: Json) => {
+    let limit: number | undefined = undefined;
+    let oAuth2AccessTokenResponse: IOAuth2AccessTokenResponse;
+    oAuth2AccessTokenResponse = body['args'][0];
+    assert(implementsIOAuth2AccessTokenResponse(oAuth2AccessTokenResponse), 'Invalid oAuth2AccessTokenResponse ' + oAuth2AccessTokenResponse);
+    if (body['args'].length > 1) {
+      limit = parseInt(body['args'][1], 10);
+    }
+    return [oAuth2AccessTokenResponse, limit] as [IOAuth2AccessTokenResponse, number | undefined];
+  }, async (connector: Connector, args: [IOAuth2AccessTokenResponse, number | undefined]) => {
+    return await (connector as unknown as IFavorites).favorites(...args);
+  });
+}
