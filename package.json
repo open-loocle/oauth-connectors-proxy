@@ -1,5 +1,5 @@
 {
-  "name": "backend",
+  "name": "oauth-connectors-proxy",
   "version": "0.0.1",
   "scripts": {
     "build": "npx tsc",
@@ -26,6 +26,6 @@
     "typescript": "^3.9.7"
   },
   "dependencies": {
-    "connectors": "file:../oauth-connectors"
+    "connectors": "open-loocle/oauth-connectors"
   }
 }
