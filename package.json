@@ -26,6 +26,6 @@
     "typescript": "^3.9.7"
   },
   "dependencies": {
-    "connectors": "open-loocle/oauth-connectors"
+    "connectors": "../oauth-connectors"
   }
 }
