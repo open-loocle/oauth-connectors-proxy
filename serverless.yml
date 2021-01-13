@@ -87,5 +87,33 @@ functions:
           path: connectors/Slack/favorites
           method: post
           cors: true
+  connectorsDemoSlackAccessTokenRequest:
+    handler: connectors/DemoSlack.accessTokenRequest
+    events:
+      - http:
+          path: connectors/DemoSlack/accessTokenRequest
+          method: post
+          cors: true
+  connectorsDemoSlackSearch:
+    handler: connectors/DemoSlack.search
+    events:
+      - http:
+          path: connectors/DemoSlack/search
+          method: post
+          cors: true
+  connectorsDemoSlackCurrentUser:
+    handler: connectors/DemoSlack.currentUser
+    events:
+      - http:
+          path: connectors/DemoSlack/currentUser
+          method: post
+          cors: true
+  connectorsDemoSlackFavorites:
+    handler: connectors/DemoSlack.favorites
+    events:
+      - http:
+          path: connectors/DemoSlack/favorites
+          method: post
+          cors: true
 
 resources:
