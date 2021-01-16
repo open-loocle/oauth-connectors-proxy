@@ -65,8 +65,18 @@ export class Slack extends SlackOriginal {
   }
 }
 
+export class DemoSlack extends Slack {
+  static mockDemoAuth: jest.Mock = jest.fn();
+
+  async demoAuth(): Promise<IOAuth2AccessTokenResponse> {
+    // TODO: Fix type errors in the file
+    return DemoSlack.mockDemoAuth();
+  }
+}
+
 module.exports = {
   ...connectors,
   ConfluenceServer,
   Slack,
+  DemoSlack,
 };

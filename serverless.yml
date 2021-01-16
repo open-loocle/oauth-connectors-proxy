@@ -115,5 +115,12 @@ functions:
           path: connectors/DemoSlack/favorites
           method: post
           cors: true
+  connectorsDemoSlackDemoAuth:
+    handler: connectors/DemoSlack.demoAuth
+    events:
+      - http:
+          path: connectors/DemoSlack/demoAuth
+          method: post
+          cors: true
 
 resources:

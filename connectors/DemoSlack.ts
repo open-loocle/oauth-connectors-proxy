@@ -1,7 +1,7 @@
 import { APIGatewayEvent, APIGatewayProxyResult, Context } from 'aws-lambda';
 import * as assert from 'assert';
 import {
-  Connector, DemoSlack, ICurrentUser, IFavorites,
+  Connector, DemoSlack, ICurrentUser, IDemoAuth, IFavorites,
   implementsIOAuth2AccessTokenRequest,
   implementsIOAuth2AccessTokenResponse,
   IOAuth2,
@@ -72,5 +72,16 @@ export async function favorites(event: APIGatewayEvent, context: Context): Promi
     return [oAuth2AccessTokenResponse, limit] as [IOAuth2AccessTokenResponse, number | undefined];
   }, async (connector: Connector, args: [IOAuth2AccessTokenResponse, number | undefined]) => {
     return await (connector as unknown as IFavorites).favorites(...args);
+  });
+}
+
+export async function demoAuth(event: APIGatewayEvent, context: Context): Promise<APIGatewayProxyResult> {
+  console.info('DemoSlack demoAuth');
+  return await handlePost(event, context, (body: Json, context: Context) => {
+    return getConnector(DemoSlack, body, context, clientSecret, accessToken);
+  }, () => {
+    return null;
+  }, async (connector: Connector) => {
+    return await (connector as unknown as IDemoAuth).demoAuth();
   });
 }
