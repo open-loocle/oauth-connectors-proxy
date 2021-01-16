@@ -1,7 +1,7 @@
 import { APIGatewayEvent, APIGatewayProxyResult, Context } from 'aws-lambda';
 import * as assert from 'assert';
 import {
-  Connector, ICurrentUser, IFavorites,
+  Connector, DemoSlack, ICurrentUser, IFavorites,
   implementsIOAuth2AccessTokenRequest,
   implementsIOAuth2AccessTokenResponse,
   IOAuth2,
@@ -12,7 +12,6 @@ import {
 import getConnector from './getConnector';
 import loadEnvVariable from '../loadEnvVariable';
 import handlePost, { Json } from './handlePost';
-import DemoSlack from "connectors/src/DemoSlack";
 
 const clientSecret = loadEnvVariable('OAUTH_SLACK_CLIENT_SECRET');
 const accessToken = loadEnvVariable('OAUTH_DEMO_SLACK_ACCESS_TOKEN');
