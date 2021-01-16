@@ -6,6 +6,7 @@
     "watch": "tsc -w",
     "start": "nodemon devServer.js",
     "lint": "tslint -p tsconfig.json",
+    "lint-fix": "tslint -p tsconfig.json --fix",
     "test": "npx jest",
     "deploy": "npm run build && npm run lint && npm run test && serverless deploy --stage production --region eu-central-1"
   },
