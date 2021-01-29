@@ -4,8 +4,9 @@ import * as assert from 'assert';
 
 export type Json = { [name: string]: any };
 
+const ACCESS_CONTROL_ALLOW_ORIGIN = process.env['ACCESS_CONTROL_ALLOW_ORIGIN'] || 'https://d2jupu3zypvvzl.cloudfront.net';
 const headers = {
-  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Origin': ACCESS_CONTROL_ALLOW_ORIGIN,
   'Access-Control-Allow-Credentials': true,
 };
 

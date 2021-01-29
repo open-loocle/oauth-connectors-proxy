@@ -17,9 +17,8 @@ import {
 } from 'connectors';
 
 const confluenceServer = new ConfluenceServer('http://confluence.yourdomain.com');
-// TODO: Delete allow origin * if not needed for security reasons
 const headers = {
-  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Origin': process.env['ACCESS_CONTROL_ALLOW_ORIGIN'],
   'Access-Control-Allow-Credentials': true,
 };
 

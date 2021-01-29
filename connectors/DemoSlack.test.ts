@@ -4,7 +4,7 @@ import apiGatewayEvent from './apiGatewayEvent';
 import context from './context';
 
 const headers = {
-  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Origin': process.env['ACCESS_CONTROL_ALLOW_ORIGIN'],
   'Access-Control-Allow-Credentials': true,
 };
 

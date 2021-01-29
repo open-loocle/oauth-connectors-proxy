@@ -4,7 +4,7 @@ import context from './context';
 import { IOAuth2AccessTokenResponse, IUser, SearchResult, Slack } from 'connectors';
 
 const headers = {
-  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Origin': process.env['ACCESS_CONTROL_ALLOW_ORIGIN'],
   'Access-Control-Allow-Credentials': true,
 };
 
