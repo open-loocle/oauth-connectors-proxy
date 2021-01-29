@@ -21,7 +21,7 @@ app.use('/connectors/:file/:handler', async (req, res) => {
   const result = await lambdaLocal.execute({
     lambdaPath: path.join(__dirname, 'connectors', req.params['file']),
     lambdaHandler: req.params['handler'],
-    envfile: path.join(__dirname, '.env'),
+    envfile: path.join(__dirname, '.env.dev'),
     event,
     timeoutMs: 6000,
   });
