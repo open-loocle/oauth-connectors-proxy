@@ -19,6 +19,7 @@ functions:
   #  Function names are prefixed with "loocle-production-"
   connectorsConfluenceServerTemporaryCredential:
     handler: connectors/ConfluenceServer.temporaryCredentialRequest
+    timeout: 30
     events:
       - http:
           path: connectors/ConfluenceServer/temporaryCredentialRequest
@@ -26,13 +27,20 @@ functions:
           cors: true
   connectorsConfluenceServerTokenCredentials:
     handler: connectors/ConfluenceServer.tokenCredentialsRequest
+    timeout: 30
     events:
       - http:
           path: connectors/ConfluenceServer/tokenCredentialsRequest
           method: post
           cors: true
+  # TODO: Improve user experience with waiting for response
+  # 1. A partial response can be shown.
+  # 2. We can make a better timeout detection. Right now if lambda times out, we get 502 bad gateway.
+  #  After that timeouts can be decreased.
+  # 3. We can better communicate where we're still searching and what else is happening.
   connectorsConfluenceServerSearch:
     handler: connectors/ConfluenceServer.search
+    timeout: 30
     events:
       - http:
           path: connectors/ConfluenceServer/search
@@ -40,6 +48,7 @@ functions:
           cors: true
   connectorsConfluenceServerVisited:
     handler: connectors/ConfluenceServer.visited
+    timeout: 30
     events:
       - http:
           path: connectors/ConfluenceServer/visited
@@ -47,6 +56,7 @@ functions:
           cors: true
   connectorsConfluenceServerCurrentUser:
     handler: connectors/ConfluenceServer.currentUser
+    timeout: 30
     events:
       - http:
           path: connectors/ConfluenceServer/currentUser
@@ -54,6 +64,7 @@ functions:
           cors: true
   connectorsConfluenceServerFavorites:
     handler: connectors/ConfluenceServer.favorites
+    timeout: 30
     events:
       - http:
           path: connectors/ConfluenceServer/favorites
@@ -61,6 +72,7 @@ functions:
           cors: true
   connectorsSlackAccessTokenRequest:
     handler: connectors/Slack.accessTokenRequest
+    timeout: 30
     events:
       - http:
           path: connectors/Slack/accessTokenRequest
@@ -68,6 +80,7 @@ functions:
           cors: true
   connectorsSlackSearch:
     handler: connectors/Slack.search
+    timeout: 30
     events:
       - http:
           path: connectors/Slack/search
@@ -75,6 +88,7 @@ functions:
           cors: true
   connectorsSlackCurrentUser:
     handler: connectors/Slack.currentUser
+    timeout: 30
     events:
       - http:
           path: connectors/Slack/currentUser
@@ -82,6 +96,7 @@ functions:
           cors: true
   connectorsSlackFavorites:
     handler: connectors/Slack.favorites
+    timeout: 30
     events:
       - http:
           path: connectors/Slack/favorites
@@ -89,6 +104,7 @@ functions:
           cors: true
   connectorsDemoSlackAccessTokenRequest:
     handler: connectors/DemoSlack.accessTokenRequest
+    timeout: 30
     events:
       - http:
           path: connectors/DemoSlack/accessTokenRequest
@@ -96,6 +112,7 @@ functions:
           cors: true
   connectorsDemoSlackSearch:
     handler: connectors/DemoSlack.search
+    timeout: 30
     events:
       - http:
           path: connectors/DemoSlack/search
@@ -103,6 +120,7 @@ functions:
           cors: true
   connectorsDemoSlackCurrentUser:
     handler: connectors/DemoSlack.currentUser
+    timeout: 30
     events:
       - http:
           path: connectors/DemoSlack/currentUser
@@ -110,6 +128,7 @@ functions:
           cors: true
   connectorsDemoSlackFavorites:
     handler: connectors/DemoSlack.favorites
+    timeout: 30
     events:
       - http:
           path: connectors/DemoSlack/favorites
@@ -117,6 +136,7 @@ functions:
           cors: true
   connectorsDemoSlackDemoAuth:
     handler: connectors/DemoSlack.demoAuth
+    timeout: 30
     events:
       - http:
           path: connectors/DemoSlack/demoAuth
