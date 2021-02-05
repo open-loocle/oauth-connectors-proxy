@@ -23,7 +23,7 @@ app.use('/connectors/:file/:handler', async (req, res) => {
     lambdaHandler: req.params['handler'],
     envfile: path.join(__dirname, '.env.dev'),
     event,
-    timeoutMs: 6000,
+    timeoutMs: 30000,
   });
   res
   .status(result.statusCode)
