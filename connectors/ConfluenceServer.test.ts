@@ -11,9 +11,12 @@ import context from './context';
 import {
   ConfluenceServer,
   ErrorCode,
-  ErrorCodeConnectorError, IOAuth1TokenCredentialsResponse, IUser,
+  ErrorCodeConnectorError,
+  IOAuth1TokenCredentialsResponse,
+  IUser,
   OAuth1Signature,
-  OAuth1TemporaryCredentialResponse, SearchResult,
+  OAuth1TemporaryCredentialResponse,
+  SearchResult,
 } from 'connectors';
 
 const confluenceServer = new ConfluenceServer('http://confluence.yourdomain.com');
@@ -33,12 +36,14 @@ describe('temporaryCredentialRequest', () => {
       statusCode: 400,
       headers,
       body: JSON.stringify({
-        // TODO: Make friendlier errors in case of invalid requests
-        'generatedMessage': false,
-        'code': 'ERR_ASSERTION',
-        'actual': false,
-        'expected': true,
-        'operator': '==',
+        'error': {
+          // TODO: Make friendlier errors in case of invalid requests
+          'generatedMessage': false,
+          'code': 'ERR_ASSERTION',
+          'actual': false,
+          'expected': true,
+          'operator': '==',
+        },
       }),
     });
   });
@@ -52,7 +57,8 @@ describe('temporaryCredentialRequest', () => {
     expect(res).toStrictEqual({
       statusCode: 400,
       headers,
-      body: '{}',
+      // TODO: Don't return an empty error in this case
+      body: JSON.stringify({error: {}}),
     });
   });
 
@@ -78,9 +84,11 @@ describe('temporaryCredentialRequest', () => {
       headers,
       // TODO: Should we pass errorCodes as strings instead?
       body: JSON.stringify({
-        'connector': {'origin': 'http://confluence.yourdomain.com', 'timeout': 10000},
-        'message': 'Timeout',
-        'errorCode': 8,
+        'error': {
+          'connector': {'origin': 'http://confluence.yourdomain.com', 'timeout': 10000},
+          'message': 'Timeout',
+          'errorCode': 8,
+        },
       }),
     });
   });
@@ -126,11 +134,13 @@ describe('tokenCredentialsRequest', () => {
       statusCode: 400,
       headers,
       body: JSON.stringify({
-        'generatedMessage': false,
-        'code': 'ERR_ASSERTION',
-        'actual': false,
-        'expected': true,
-        'operator': '==',
+        'error': {
+          'generatedMessage': false,
+          'code': 'ERR_ASSERTION',
+          'actual': false,
+          'expected': true,
+          'operator': '==',
+        },
       }),
     });
   });
@@ -143,7 +153,7 @@ describe('tokenCredentialsRequest', () => {
       statusCode: 400,
       headers,
       // TODO: Fix Error JSON.stringify
-      body: '{}',
+      body: JSON.stringify({error: {}}),
     });
   });
 
@@ -167,7 +177,16 @@ describe('tokenCredentialsRequest', () => {
     expect(res).toStrictEqual({
       statusCode: 500,
       headers,
-      body: JSON.stringify({'connector': {'origin': 'http://confluence.yourdomain.com','timeout': 10000},'message': 'Timeout','errorCode': 8}),
+      body: JSON.stringify({
+        'error': {
+          'connector': {
+            'origin': 'http://confluence.yourdomain.com',
+            'timeout': 10000,
+          },
+          'message': 'Timeout',
+          'errorCode': 8,
+        },
+      }),
     });
   });
 
@@ -178,7 +197,7 @@ describe('tokenCredentialsRequest', () => {
     const oauthToken = 'token';
     const oauthTokenSecret = 'tokenSecret';
     // @ts-ignore
-    ConfluenceServer.mockTokenCredentialsRequest.mockReturnValue({ oauthToken, oauthTokenSecret });
+    ConfluenceServer.mockTokenCredentialsRequest.mockReturnValue({oauthToken, oauthTokenSecret});
     const res = await tokenCredentialsRequest(apiGatewayEvent({
       body: JSON.stringify({
         connector: {
@@ -211,7 +230,15 @@ describe('search', () => {
     expect(res).toStrictEqual({
       statusCode: 400,
       headers,
-      body: JSON.stringify({'generatedMessage': false,'code': 'ERR_ASSERTION','actual': false,'expected': true,'operator': '=='}),
+      body: JSON.stringify({
+        'error': {
+          'generatedMessage': false,
+          'code': 'ERR_ASSERTION',
+          'actual': false,
+          'expected': true,
+          'operator': '==',
+        },
+      }),
     });
   });
 
@@ -227,14 +254,21 @@ describe('search', () => {
         },
         args: [
           'test',
-          { oauthToken: 'oauthToken', oauthTokenSecret: 'oauthTokenSecret' },
+          {oauthToken: 'oauthToken', oauthTokenSecret: 'oauthTokenSecret'},
         ],
       }),
     }), context());
     expect(res).toStrictEqual({
       statusCode: 500,
       headers,
-      body: JSON.stringify({'connector': {'origin': 'http://confluence.yourdomain.com','timeout': 10000},'message': 'Timeout','errorCode': 8}),
+      body: JSON.stringify({
+        'error': {
+          'connector': {
+            'origin': 'http://confluence.yourdomain.com',
+            'timeout': 10000,
+          }, 'message': 'Timeout', 'errorCode': 8,
+        },
+      }),
     });
   });
 
@@ -247,7 +281,10 @@ describe('search', () => {
     // @ts-ignore
     ConfluenceServer.mockSearch.mockImplementation((query: string, oAuth1TokenCredentialsResponse: IOAuth1TokenCredentialsResponse) => {
       expect(query).toStrictEqual('test');
-      expect(oAuth1TokenCredentialsResponse).toStrictEqual({oauthToken: 'oauthToken', oauthTokenSecret: 'oauthTokenSecret'});
+      expect(oAuth1TokenCredentialsResponse).toStrictEqual({
+        oauthToken: 'oauthToken',
+        oauthTokenSecret: 'oauthTokenSecret',
+      });
       return searchResults;
     });
     const res = await search(apiGatewayEvent({
@@ -257,7 +294,7 @@ describe('search', () => {
         },
         args: [
           'test',
-          { oauthToken: 'oauthToken', oauthTokenSecret: 'oauthTokenSecret' },
+          {oauthToken: 'oauthToken', oauthTokenSecret: 'oauthTokenSecret'},
         ],
       }),
     }), context());
@@ -274,7 +311,10 @@ describe('visited', () => {
     const expectedVisited = ['123', '456'];
     // @ts-ignore
     ConfluenceServer.mockVisited.mockImplementation((oAuth1TokenCredentialsResponse: IOAuth1TokenCredentialsResponse, limit?: number) => {
-      expect(oAuth1TokenCredentialsResponse).toStrictEqual({oauthToken: 'oauthToken1', oauthTokenSecret: 'oauthTokenSecret1'});
+      expect(oAuth1TokenCredentialsResponse).toStrictEqual({
+        oauthToken: 'oauthToken1',
+        oauthTokenSecret: 'oauthTokenSecret1',
+      });
       expect(limit).toStrictEqual(100);
       return ['123', '456'];
     });
@@ -299,7 +339,7 @@ describe('visited', () => {
 
 describe('currentUser', () => {
   test('when ConfluenceServer returns a valid result', async () => {
-    const user: IUser = { id: '100' };
+    const user: IUser = {id: '100'};
     const oAuth1TokenCredentialsResponse: IOAuth1TokenCredentialsResponse = {
       oauthToken: 'oauthToken',
       oauthTokenSecret: 'oauthTokenSecret',

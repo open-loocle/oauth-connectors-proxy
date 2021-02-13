@@ -30,7 +30,7 @@ export default async function handlePost<A extends any, R extends any>(
     return {
       statusCode: 400,
       headers,
-      body: JSON.stringify(error),
+      body: JSON.stringify({error}),
     };
   }
   let result: R;
@@ -40,7 +40,7 @@ export default async function handlePost<A extends any, R extends any>(
     return {
       statusCode: 500,
       headers,
-      body: JSON.stringify(error),
+      body: JSON.stringify({error}),
     };
   }
   return {

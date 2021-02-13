@@ -15,11 +15,13 @@ describe('accessTokenRequest', () => {
       statusCode: 400,
       headers,
       body: JSON.stringify({
-        'generatedMessage': false,
-        'code': 'ERR_ASSERTION',
-        'actual': false,
-        'expected': true,
-        'operator': '==',
+        'error': {
+          'generatedMessage': false,
+          'code': 'ERR_ASSERTION',
+          'actual': false,
+          'expected': true,
+          'operator': '==',
+        },
       }),
     });
   });
@@ -31,7 +33,7 @@ describe('accessTokenRequest', () => {
     expect(res).toStrictEqual({
       statusCode: 400,
       headers,
-      body: '{}',
+      body: JSON.stringify({error: {}}),
     });
   });
 
@@ -59,7 +61,7 @@ describe('accessTokenRequest', () => {
     expect(res).toStrictEqual({
       statusCode: 500,
       headers,
-      body: JSON.stringify({}),
+      body: JSON.stringify({error: {}}),
     });
   });
 
