@@ -65,7 +65,7 @@ describe('temporaryCredentialRequest', () => {
   test('when ConfluenceServer throws an error', async () => {
     // @ts-ignore
     ConfluenceServer.mockTemporaryCredentialRequest.mockImplementation(() => {
-      throw new ErrorCodeConnectorError(ErrorCode.TIMEOUT_ERROR, confluenceServer, 'Timeout');
+      throw new ErrorCodeConnectorError(ErrorCode.NETWORK_ERROR, confluenceServer, 'Network');
     });
     const res = await temporaryCredentialRequest(apiGatewayEvent({
       body: JSON.stringify({
@@ -85,9 +85,9 @@ describe('temporaryCredentialRequest', () => {
       // TODO: Should we pass errorCodes as strings instead?
       body: JSON.stringify({
         'error': {
-          'connector': {'origin': 'http://confluence.yourdomain.com', 'timeout': 10000},
-          'message': 'Timeout',
-          'errorCode': 8,
+          'connector': {'origin': 'http://confluence.yourdomain.com'},
+          'message': 'Network',
+          'errorCode': ErrorCode.NETWORK_ERROR,
         },
       }),
     });
@@ -160,7 +160,7 @@ describe('tokenCredentialsRequest', () => {
   test('when ConfluenceServer throws an error', async () => {
     // @ts-ignore
     ConfluenceServer.mockTokenCredentialsRequest.mockImplementation(() => {
-      throw new ErrorCodeConnectorError(ErrorCode.TIMEOUT_ERROR, confluenceServer, 'Timeout');
+      throw new ErrorCodeConnectorError(ErrorCode.NETWORK_ERROR, confluenceServer, 'Network');
     });
     const res = await tokenCredentialsRequest(apiGatewayEvent({
       body: JSON.stringify({
@@ -181,10 +181,9 @@ describe('tokenCredentialsRequest', () => {
         'error': {
           'connector': {
             'origin': 'http://confluence.yourdomain.com',
-            'timeout': 10000,
           },
-          'message': 'Timeout',
-          'errorCode': 8,
+          'message': 'Network',
+          'errorCode': ErrorCode.NETWORK_ERROR,
         },
       }),
     });
@@ -245,7 +244,7 @@ describe('search', () => {
   test('when ConfluenceServer throws an error', async () => {
     // @ts-ignore
     ConfluenceServer.mockSearch.mockImplementation(() => {
-      throw new ErrorCodeConnectorError(ErrorCode.TIMEOUT_ERROR, confluenceServer, 'Timeout');
+      throw new ErrorCodeConnectorError(ErrorCode.NETWORK_ERROR, confluenceServer, 'Network');
     });
     const res = await search(apiGatewayEvent({
       body: JSON.stringify({
@@ -265,8 +264,7 @@ describe('search', () => {
         'error': {
           'connector': {
             'origin': 'http://confluence.yourdomain.com',
-            'timeout': 10000,
-          }, 'message': 'Timeout', 'errorCode': 8,
+          }, 'message': 'Network', 'errorCode': ErrorCode.NETWORK_ERROR,
         },
       }),
     });
