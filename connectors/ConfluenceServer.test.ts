@@ -272,17 +272,24 @@ describe('search', () => {
 
   // TODO: Test when queryStringParameters miss required fields
 
-  test('when ConfluenceServer.search returns a valid result', async () => {
+  test.each([
+    ['test', {oauthToken: 'oauthToken', oauthTokenSecret: 'oauthTokenSecret'}],
+    ['test', {oauthToken: 'oauthToken', oauthTokenSecret: 'oauthTokenSecret'}, {limit: 50}],
+  ])('when ConfluenceServer.search returns a valid result', async (...args) => {
     const searchResults = [
       new SearchResult('65591', 'Test', '', 'http://localhost:8090/display/TEST/Test', '402880824ff933a4014ff9345d7c0002', 1588595958.283),
     ];
     // @ts-ignore
-    ConfluenceServer.mockSearch.mockImplementation((query: string, oAuth1TokenCredentialsResponse: IOAuth1TokenCredentialsResponse) => {
-      expect(query).toStrictEqual('test');
-      expect(oAuth1TokenCredentialsResponse).toStrictEqual({
-        oauthToken: 'oauthToken',
-        oauthTokenSecret: 'oauthTokenSecret',
-      });
+    ConfluenceServer.mockSearch.mockImplementation((
+        query: string,
+        oAuth1TokenCredentialsResponse: IOAuth1TokenCredentialsResponse,
+        additionalParameters: { [key: string]: any } | undefined,
+    ) => {
+      expect(query).toStrictEqual(args[0]);
+      expect(oAuth1TokenCredentialsResponse).toStrictEqual(args[1]);
+      if (args.length > 2) {
+        expect(additionalParameters).toStrictEqual(args.pop());
+      }
       return searchResults;
     });
     const res = await search(apiGatewayEvent({
@@ -290,10 +297,7 @@ describe('search', () => {
         connector: {
           origin: 'http://confluence.yourdomain.com',
         },
-        args: [
-          'test',
-          {oauthToken: 'oauthToken', oauthTokenSecret: 'oauthTokenSecret'},
-        ],
+        args,
       }),
     }), context());
     expect(res).toStrictEqual({

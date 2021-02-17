@@ -49,10 +49,11 @@ export async function search(event: APIGatewayEvent, context: Context): Promise<
   }, (body: Json) => {
     let query: string;
     let oAuth1TokenCredentialsResponse: IOAuth1TokenCredentialsResponse;
-    [query, oAuth1TokenCredentialsResponse] = body['args'];
+    let additionalParameters: { [key: string]: any } | undefined;
+    [query, oAuth1TokenCredentialsResponse, additionalParameters] = body['args'];
     assert(implementsIOAuth1TokenCredentialsResponse(oAuth1TokenCredentialsResponse), 'Invalid oAuth1TokenCredentialsResponse ' + oAuth1TokenCredentialsResponse);
-    return [query, oAuth1TokenCredentialsResponse] as [string, IOAuth1TokenCredentialsResponse];
-  }, async (connector: Connector, args: [string, IOAuth1TokenCredentialsResponse]) => {
+    return [query, oAuth1TokenCredentialsResponse, additionalParameters] as [string, IOAuth1TokenCredentialsResponse, { [key: string]: any } | undefined];
+  }, async (connector: Connector, args: [string, IOAuth1TokenCredentialsResponse, { [key: string]: any } | undefined]) => {
     return await (connector as unknown as ISearch).search(...args);
   });
 }
