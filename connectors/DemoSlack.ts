@@ -18,8 +18,8 @@ const accessToken = loadEnvVariable('OAUTH_DEMO_SLACK_ACCESS_TOKEN');
 
 export async function accessTokenRequest(event: APIGatewayEvent, context: Context): Promise<APIGatewayProxyResult> {
   console.info('DemoSlack accessTokenRequest');
-  return await handlePost(event, context, (body: Json, context: Context) => {
-    return getConnector(DemoSlack, body, context, clientSecret, accessToken);
+  return await handlePost(event, context, (body: Json) => {
+    return getConnector(DemoSlack, body, clientSecret, accessToken);
   }, (body: Json) => {
     const oAuth2AccessTokenRequest: IOAuth2AccessTokenRequest = body['oAuth2AccessTokenRequest'];
     assert(implementsIOAuth2AccessTokenRequest(oAuth2AccessTokenRequest), 'Invalid oAuth2AccessTokenRequest ' + oAuth2AccessTokenRequest);
@@ -31,8 +31,8 @@ export async function accessTokenRequest(event: APIGatewayEvent, context: Contex
 
 export async function search(event: APIGatewayEvent, context: Context): Promise<APIGatewayProxyResult> {
   console.info('DemoSlack search');
-  return handlePost(event, context, (body: Json, context: Context) => {
-    return getConnector(DemoSlack, body, context);
+  return handlePost(event, context, (body: Json) => {
+    return getConnector(DemoSlack, body);
   }, (body: Json) => {
     let query: string;
     let oAuth2AccessTokenResponse: IOAuth2AccessTokenResponse;
@@ -46,8 +46,8 @@ export async function search(event: APIGatewayEvent, context: Context): Promise<
 
 export async function currentUser(event: APIGatewayEvent, context: Context): Promise<APIGatewayProxyResult> {
   console.info('DemoSlack currentUser');
-  return handlePost(event, context, (body: Json, context: Context) => {
-    return getConnector(DemoSlack, body, context);
+  return handlePost(event, context, (body: Json) => {
+    return getConnector(DemoSlack, body);
   }, (body: Json) => {
     const oAuth2AccessTokenResponse: IOAuth2AccessTokenResponse = body['args'][0];
     assert(implementsIOAuth2AccessTokenResponse(oAuth2AccessTokenResponse), 'Invalid oAuth2AccessTokenResponse ' + oAuth2AccessTokenResponse);
@@ -59,8 +59,8 @@ export async function currentUser(event: APIGatewayEvent, context: Context): Pro
 
 export async function favorites(event: APIGatewayEvent, context: Context): Promise<APIGatewayProxyResult> {
   console.info('DemoSlack favorites');
-  return handlePost(event, context, (body: Json, context: Context) => {
-    return getConnector(DemoSlack, body, context);
+  return handlePost(event, context, (body: Json) => {
+    return getConnector(DemoSlack, body);
   }, (body: Json) => {
     let limit: number | undefined = undefined;
     let oAuth2AccessTokenResponse: IOAuth2AccessTokenResponse;
@@ -77,8 +77,8 @@ export async function favorites(event: APIGatewayEvent, context: Context): Promi
 
 export async function demoAuth(event: APIGatewayEvent, context: Context): Promise<APIGatewayProxyResult> {
   console.info('DemoSlack demoAuth');
-  return await handlePost(event, context, (body: Json, context: Context) => {
-    return getConnector(DemoSlack, body, context, clientSecret, accessToken);
+  return await handlePost(event, context, (body: Json) => {
+    return getConnector(DemoSlack, body, clientSecret, accessToken);
   }, () => {
     return null;
   }, async (connector: Connector) => {

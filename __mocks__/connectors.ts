@@ -43,10 +43,16 @@ export class ConfluenceServer extends ConfluenceServerOriginal {
 }
 
 export class Slack extends SlackOriginal {
+  static mockConstructor: jest.Mock = jest.fn();
   static mockAccessTokenRequest: jest.Mock = jest.fn();
   static mockSearch: jest.Mock = jest.fn();
   static mockCurrentUser: jest.Mock = jest.fn();
   static mockFavorites: jest.Mock = jest.fn();
+
+  constructor(origin: string | null, clientSecret?: string) {
+    super(origin, clientSecret);
+    Slack.mockConstructor(origin, clientSecret);
+  }
 
   async accessTokenRequest(...args: any): Promise<IOAuth2AccessTokenResponse> {
     return Slack.mockAccessTokenRequest(...args);

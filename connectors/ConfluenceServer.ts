@@ -18,8 +18,8 @@ import handlePost, { Json } from './handlePost';
 
 export async function temporaryCredentialRequest(event: APIGatewayEvent, context: Context): Promise<APIGatewayProxyResult> {
   console.info('ConfluenceServer temporaryCredentialRequest');
-  return handlePost(event, context, (body: Json, context: Context) => {
-    return getConnector(ConfluenceServer, body, context);
+  return handlePost(event, context, (body: Json) => {
+    return getConnector(ConfluenceServer, body);
   }, (body: Json) => {
     const oAuth1TemporaryCredentialRequest: IOAuth1TemporaryCredentialRequest = body['oAuth1TemporaryCredentialRequest'];
     assert(implementsIOAuth1TemporaryCredentialRequest(oAuth1TemporaryCredentialRequest), 'Invalid oAuth1TemporaryCredentialRequest ' + oAuth1TemporaryCredentialRequest);
@@ -31,8 +31,8 @@ export async function temporaryCredentialRequest(event: APIGatewayEvent, context
 
 export async function tokenCredentialsRequest(event: APIGatewayEvent, context: Context): Promise<APIGatewayProxyResult> {
   console.info('ConfluenceServer tokenCredentialsRequest');
-  return handlePost(event, context, (body: Json, context: Context) => {
-    return getConnector(ConfluenceServer, body, context);
+  return handlePost(event, context, (body: Json) => {
+    return getConnector(ConfluenceServer, body);
   }, (body: Json) => {
     const oAuth1TokenCredentialsRequest: IOAuth1TokenCredentialsRequest = body['oAuth1TokenCredentialsRequest'];
     assert(implementsIOAuth1TokenCredentialsRequest(oAuth1TokenCredentialsRequest), 'Invalid oAuth1TokenCredentialsRequest ' + oAuth1TokenCredentialsRequest);
@@ -44,8 +44,8 @@ export async function tokenCredentialsRequest(event: APIGatewayEvent, context: C
 
 export async function search(event: APIGatewayEvent, context: Context): Promise<APIGatewayProxyResult> {
   console.info('ConfluenceServer search');
-  return handlePost(event, context, (body: Json, context: Context) => {
-    return getConnector(ConfluenceServer, body, context);
+  return handlePost(event, context, (body: Json) => {
+    return getConnector(ConfluenceServer, body);
   }, (body: Json) => {
     let query: string;
     let oAuth1TokenCredentialsResponse: IOAuth1TokenCredentialsResponse;
@@ -59,8 +59,8 @@ export async function search(event: APIGatewayEvent, context: Context): Promise<
 
 export async function visited(event: APIGatewayEvent, context: Context): Promise<APIGatewayProxyResult> {
   console.info('ConfluenceServer visited');
-  return handlePost(event, context, (body: Json, context: Context) => {
-    return getConnector(ConfluenceServer, body, context);
+  return handlePost(event, context, (body: Json) => {
+    return getConnector(ConfluenceServer, body);
   }, (body: Json) => {
     let limit: number | undefined = undefined;
     let oAuth1TokenCredentialsResponse: IOAuth1TokenCredentialsResponse;
@@ -77,8 +77,8 @@ export async function visited(event: APIGatewayEvent, context: Context): Promise
 
 export async function currentUser(event: APIGatewayEvent, context: Context): Promise<APIGatewayProxyResult> {
   console.info('ConfluenceServer currentUser');
-  return handlePost(event, context, (body: Json, context: Context) => {
-    return getConnector(ConfluenceServer, body, context);
+  return handlePost(event, context, (body: Json) => {
+    return getConnector(ConfluenceServer, body);
   }, (body: Json) => {
     const oAuth1TokenCredentialsResponse: IOAuth1TokenCredentialsResponse = body['args'][0];
     assert(implementsIOAuth1TokenCredentialsResponse(oAuth1TokenCredentialsResponse), 'Invalid oAuth1TokenCredentialsResponse ' + oAuth1TokenCredentialsResponse);
@@ -90,8 +90,8 @@ export async function currentUser(event: APIGatewayEvent, context: Context): Pro
 
 export async function favorites(event: APIGatewayEvent, context: Context): Promise<APIGatewayProxyResult> {
   console.info('ConfluenceServer favorites');
-  return handlePost(event, context, (body: Json, context: Context) => {
-    return getConnector(ConfluenceServer, body, context);
+  return handlePost(event, context, (body: Json) => {
+    return getConnector(ConfluenceServer, body);
   }, (body: Json) => {
     let limit: number | undefined = undefined;
     let oAuth1TokenCredentialsResponse: IOAuth1TokenCredentialsResponse;

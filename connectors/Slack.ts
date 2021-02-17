@@ -18,8 +18,8 @@ const clientSecret = loadEnvVariable('OAUTH_SLACK_CLIENT_SECRET');
 
 export async function accessTokenRequest(event: APIGatewayEvent, context: Context): Promise<APIGatewayProxyResult> {
   console.info('Slack accessTokenRequest');
-  return await handlePost(event, context, (body: Json, context: Context) => {
-    return getConnector(Slack, body, context, clientSecret);
+  return await handlePost(event, context, (body: Json) => {
+    return getConnector(Slack, body, clientSecret);
   }, (body: Json) => {
     const oAuth2AccessTokenRequest: IOAuth2AccessTokenRequest = body['oAuth2AccessTokenRequest'];
     assert(implementsIOAuth2AccessTokenRequest(oAuth2AccessTokenRequest), 'Invalid oAuth2AccessTokenRequest ' + oAuth2AccessTokenRequest);
@@ -31,8 +31,8 @@ export async function accessTokenRequest(event: APIGatewayEvent, context: Contex
 
 export async function search(event: APIGatewayEvent, context: Context): Promise<APIGatewayProxyResult> {
   console.info('Slack search');
-  return handlePost(event, context, (body: Json, context: Context) => {
-    return getConnector(Slack, body, context);
+  return handlePost(event, context, (body: Json) => {
+    return getConnector(Slack, body);
   }, (body: Json) => {
     let query: string;
     let oAuth2AccessTokenResponse: IOAuth2AccessTokenResponse;
@@ -46,8 +46,8 @@ export async function search(event: APIGatewayEvent, context: Context): Promise<
 
 export async function currentUser(event: APIGatewayEvent, context: Context): Promise<APIGatewayProxyResult> {
   console.info('Slack currentUser');
-  return handlePost(event, context, (body: Json, context: Context) => {
-    return getConnector(Slack, body, context);
+  return handlePost(event, context, (body: Json) => {
+    return getConnector(Slack, body);
   }, (body: Json) => {
     const oAuth2AccessTokenResponse: IOAuth2AccessTokenResponse = body['args'][0];
     assert(implementsIOAuth2AccessTokenResponse(oAuth2AccessTokenResponse), 'Invalid oAuth2AccessTokenResponse ' + oAuth2AccessTokenResponse);
@@ -59,8 +59,8 @@ export async function currentUser(event: APIGatewayEvent, context: Context): Pro
 
 export async function favorites(event: APIGatewayEvent, context: Context): Promise<APIGatewayProxyResult> {
   console.info('Slack favorites');
-  return handlePost(event, context, (body: Json, context: Context) => {
-    return getConnector(Slack, body, context);
+  return handlePost(event, context, (body: Json) => {
+    return getConnector(Slack, body);
   }, (body: Json) => {
     let limit: number | undefined = undefined;
     let oAuth2AccessTokenResponse: IOAuth2AccessTokenResponse;
