@@ -1,7 +1,7 @@
-import { accessTokenRequest, currentUser, favorites, search } from './Slack';
 import apiGatewayEvent from './apiGatewayEvent';
 import context from './context';
-import { IOAuth2AccessTokenResponse, IUser, SearchResult, Slack } from 'connectors';
+import { IOAuth2AccessTokenResponse, SearchResult, Github } from 'connectors';
+import { accessTokenRequest, search } from './Github';
 
 const headers = {
   'Access-Control-Allow-Origin': process.env['ACCESS_CONTROL_ALLOW_ORIGIN'],
@@ -39,17 +39,16 @@ describe('accessTokenRequest', () => {
 
   // TODO: Test (and implement the right behaviour if needed) when body is a valid json but doesn't have required
 
-  // TODO: Don't mention WebClient in tests. It's Slack connector implementation details
-  test('when WebClient throws an error', async () => {
+  test('when Github connector throws an error', async () => {
     const errorMessage = 'errorMessage';
     // @ts-ignore
-    Slack.mockAccessTokenRequest.mockImplementation(() => {
+    Github.mockAccessTokenRequest.mockImplementation(() => {
       throw new Error(errorMessage);
     });
     const res = await accessTokenRequest(apiGatewayEvent({
       body: JSON.stringify({
         connector: {
-          origin: 'https://slack.com',
+          origin: 'https://github.com',
         },
         oAuth2AccessTokenRequest: {
           grantType: 'granyType',
@@ -66,18 +65,18 @@ describe('accessTokenRequest', () => {
     });
   });
 
-  test('when WebClient.oauth.access returns access token', async () => {
+  test('when Github.accessTokenRequest returns access token', async () => {
     const accessToken = 'dwfwfwfwf';
     const tokenType = 'tokenType';
     // @ts-ignore
-    Slack.mockAccessTokenRequest.mockReturnValue({
+    Github.mockAccessTokenRequest.mockReturnValue({
       accessToken,
       tokenType,
     });
     const res = await accessTokenRequest(apiGatewayEvent({
       body: JSON.stringify({
         connector: {
-          origin: 'https://slack.com',
+          origin: 'https://github.com',
         },
         oAuth2AccessTokenRequest: {
           grantType: 'granyType',
@@ -96,14 +95,14 @@ describe('accessTokenRequest', () => {
 });
 
 describe('search', () => {
-  test('when Slack.search returns valid searchResults', async () => {
+  test('when Github.search returns valid searchResults', async () => {
     const accessToken = 'accessToken';
     const tokenType = 'tokenType';
     const searchResults = [
       new SearchResult('id', 'title', 'text', 'link', 'userId', 1231231230),
     ];
     // @ts-ignore
-    Slack.mockSearch.mockImplementation((query: string, oAuth2AccessTokenResponse: IOAuth2AccessTokenResponse | null) => {
+    Github.mockSearch.mockImplementation((query: string, oAuth2AccessTokenResponse: IOAuth2AccessTokenResponse | null) => {
       expect(query).toStrictEqual('test');
       expect(oAuth2AccessTokenResponse).toStrictEqual({accessToken, tokenType});
       return searchResults;
@@ -111,7 +110,7 @@ describe('search', () => {
     const res = await search(apiGatewayEvent({
       body: JSON.stringify({
         connector: {
-          origin: 'https://slack.com',
+          origin: 'https://github.com',
         },
         args: [
           'test',
@@ -123,65 +122,6 @@ describe('search', () => {
       statusCode: 200,
       headers,
       body: JSON.stringify(searchResults),
-    });
-  });
-});
-
-describe('currentUser', () => {
-  test('when Slack.currentUser returns valid IUser', async () => {
-    const accessToken = 'accessToken';
-    const tokenType = 'tokenType';
-    const user: IUser = { id: 'id', name: 'name' };
-    // @ts-ignore
-    Slack.mockCurrentUser.mockImplementation((oAuth2AccessTokenResponse: IOAuth2AccessTokenResponse | null) => {
-      expect(oAuth2AccessTokenResponse).toStrictEqual({accessToken, tokenType});
-      return user;
-    });
-    const res = await currentUser(apiGatewayEvent({
-      body: JSON.stringify({
-        connector: {
-          origin: 'https://slack.com',
-        },
-        args: [
-          {accessToken, tokenType},
-        ],
-      }),
-    }), context());
-    expect(res).toStrictEqual({
-      statusCode: 200,
-      headers,
-      body: JSON.stringify(user),
-    });
-  });
-});
-
-describe('favorites', () => {
-  test('when Slack.favorites returns valid result', async () => {
-    const accessToken = 'accessToken';
-    const tokenType = 'tokenType';
-    const expectedFavorites = ['123', '234'];
-    const expectedLimit = 100;
-    // @ts-ignore
-    Slack.mockFavorites.mockImplementation((oAuth2AccessTokenResponse: IOAuth2AccessTokenResponse | null, limit?: number) => {
-      expect(oAuth2AccessTokenResponse).toStrictEqual({accessToken, tokenType});
-      expect(limit).toStrictEqual(expectedLimit);
-      return expectedFavorites;
-    });
-    const res = await favorites(apiGatewayEvent({
-      body: JSON.stringify({
-        connector: {
-          origin: 'https://slack.com',
-        },
-        args: [
-          {accessToken, tokenType},
-          expectedLimit,
-        ],
-      }),
-    }), context());
-    expect(res).toStrictEqual({
-      statusCode: 200,
-      headers,
-      body: JSON.stringify(expectedFavorites),
     });
   });
 });

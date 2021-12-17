@@ -142,5 +142,21 @@ functions:
           path: connectors/DemoSlack/demoAuth
           method: post
           cors: true
+  connectorsGithubAccessTokenRequest:
+    handler: connectors/Github.accessTokenRequest
+    timeout: 30
+    events:
+      - http:
+          path: connectors/Github/accessTokenRequest
+          method: post
+          cors: true
+  connectorsGithubSearch:
+    handler: connectors/Github.search
+    timeout: 30
+    events:
+      - http:
+          path: connectors/Github/search
+          method: post
+          cors: true
 
 resources:

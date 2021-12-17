@@ -1,6 +1,7 @@
 import {
   ConfluenceServer as ConfluenceServerOriginal,
   Slack as SlackOriginal,
+  Github as GithubOriginal,
   OAuth1TemporaryCredentialResponse,
   IOAuth1TokenCredentialsResponse, IOAuth2AccessTokenResponse, SearchResult, IUser,
 } from 'connectors';
@@ -80,9 +81,29 @@ export class DemoSlack extends Slack {
   }
 }
 
+export class Github extends GithubOriginal {
+  static mockConstructor: jest.Mock = jest.fn();
+  static mockAccessTokenRequest: jest.Mock = jest.fn();
+  static mockSearch: jest.Mock = jest.fn();
+
+  constructor(origin: string | null, clientSecret?: string) {
+    super(origin, clientSecret);
+    Github.mockConstructor(origin, clientSecret);
+  }
+
+  async accessTokenRequest(...args: any): Promise<IOAuth2AccessTokenResponse> {
+    return Github.mockAccessTokenRequest(...args);
+  }
+
+  async search(...args: any): Promise<Array<SearchResult>> {
+    return Github.mockSearch(...args);
+  }
+}
+
 module.exports = {
   ...connectors,
   ConfluenceServer,
   Slack,
   DemoSlack,
+  Github,
 };
