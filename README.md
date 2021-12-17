@@ -8,7 +8,7 @@ Because of CORS policies the connectors normally cannot be used straight from th
 
 Setup credentials first:
 
-    serverless config credentials --provider aws --key ******************** --secret **************************************** 
+    npx serverless config credentials --provider aws --key ******************** --secret **************************************** 
 
 The credentials are store in last pass.
 
