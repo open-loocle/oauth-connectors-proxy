@@ -31,10 +31,14 @@ export async function search(event: APIGatewayEvent, context: Context): Promise<
   }, (body: Json) => {
     let query: string;
     let oAuth2AccessTokenResponse: IOAuth2AccessTokenResponse;
-    [query, oAuth2AccessTokenResponse] = body['args'];
+    let additionalSearchParameters: { [key: string]: any } | undefined;
+    [query, oAuth2AccessTokenResponse, additionalSearchParameters] = body['args'];
     assert(implementsIOAuth2AccessTokenResponse(oAuth2AccessTokenResponse), 'Invalid oAuth2AccessTokenResponse ' + oAuth2AccessTokenResponse);
-    return [query, oAuth2AccessTokenResponse] as [string, IOAuth2AccessTokenResponse];
-  }, async (connector: Connector, args: [string, IOAuth2AccessTokenResponse]) => {
+    if (additionalSearchParameters === undefined) {
+      additionalSearchParameters = {};
+    }
+    return [query, oAuth2AccessTokenResponse, additionalSearchParameters] as [string, IOAuth2AccessTokenResponse, { [key: string]: any }];
+  }, async (connector: Connector, args: [string, IOAuth2AccessTokenResponse, { [key: string]: any }]) => {
     return await (connector as unknown as ISearch).search(...args);
   });
 }

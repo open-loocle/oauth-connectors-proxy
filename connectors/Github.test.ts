@@ -124,4 +124,29 @@ describe('search', () => {
       body: JSON.stringify(searchResults),
     });
   });
+
+  describe('with additionalSearchParameters', () => {
+    const args = [
+      'test',
+      {accessToken: 'accessToken', tokenType: 'tokenType'},
+      { retries: 2, timeout: 30 },
+    ];
+
+    beforeAll(async () => {
+      await search(apiGatewayEvent({
+        body: JSON.stringify({
+          connector: {
+            origin: 'https://github.com',
+          },
+          args,
+        }),
+      }), context());
+    });
+
+    test('Github.search called with the additional search parameters', () => {
+      // @ts-ignore
+      const mockSearch = Github.mockSearch;
+      expect(mockSearch).toBeCalledWith(...args);
+    });
+  });
 });
